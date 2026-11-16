@@ -265,7 +265,10 @@ export async function compileMarkdown(source: string) {
     .use(remarkRehype)
     .use(rehypeKatex, { throwOnError: false, strict: "ignore" } as never)
     .use(rehypePrettyCode, {
-      theme: "github-dark-dimmed",
+      theme: {
+        light: "github-light",
+        dark: "github-dark-dimmed",
+      },
       keepBackground: false,
       defaultLang: "plaintext",
       grid: false,

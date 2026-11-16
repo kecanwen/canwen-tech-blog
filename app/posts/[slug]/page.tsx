@@ -3,14 +3,12 @@ import "katex/dist/katex.min.css"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Suspense } from "react"
 
+import { ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon, HashIcon } from "@/components/icons"
 import { PostBody } from "@/components/post-body"
-import { ReadingProgress } from "@/components/reading-progress"
-import { TableOfContents } from "@/components/table-of-contents"
 import { getPost, getPostIndex } from "@/lib/posts"
-import { tagHref, tagLabel } from "@/lib/tags"
-import { formatDate, padRank } from "@/lib/utils"
+import { tagHref } from "@/lib/tags"
+import { formatDate } from "@/lib/utils"
 
 export async function generateStaticParams() {
   const posts = await getPostIndex()
@@ -36,15 +34,7 @@ export async function generateMetadata({ params }: PostRouteProps): Promise<Meta
   }
 }
 
-export default function PostPage({ params }: PostRouteProps) {
-  return (
-    <Suspense fallback={<PostFallback />}>
-      <PostScreen params={params} />
-    </Suspense>
-  )
-}
-
-async function PostScreen({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PostPage({ params }: PostRouteProps) {
   const { slug } = await params
   const [post, posts] = await Promise.all([getPost(slug), getPostIndex()])
   if (!post) notFound()
@@ -53,88 +43,60 @@ async function PostScreen({ params }: { params: Promise<{ slug: string }> }) {
   const next = index >= 0 && index < posts.length - 1 ? posts[index + 1] : null
 
   return (
-    <>
-      <ReadingProgress />
-      <main className="mx-auto w-full max-w-6xl px-5 py-10 md:px-8 md:py-14">
-        <p className="rise-in text-sm text-[var(--ink-faint)]">
-          <Link href="/posts" className="hover:text-[var(--accent)]">
-            文章
+    <main className="pt-8">
+      <Link href="/" className="inline-flex items-center gap-1 text-sm">
+        <ChevronLeftIcon className="size-4" />
+        返回首页
+      </Link>
+      <h1 className="post-title mt-3">{post.title}</h1>
+      {post.date ? (
+        <time dateTime={post.date} className="mt-2 block text-base italic text-zinc-400 opacity-80">
+          {formatDate(post.date)}
+        </time>
+      ) : null}
+      <article className="mt-8">
+        <PostBody html={post.html} />
+      </article>
+      <ul className="mt-8 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+        {post.tags.map((tag) => (
+          <li key={tag}>
+            <Link href={tagHref(tag)} className="inline-flex items-center gap-1 underline underline-offset-4">
+              <HashIcon className="size-4" />
+              {tag}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <a href="#top" className="mt-10 inline-flex w-full items-center justify-center gap-1 text-sm">
+        返回顶部
+        <ChevronUpIcon className="size-4" />
+      </a>
+      <hr className="mt-8 border-0 border-t border-dashed border-skin-line" />
+      <nav className="mt-6 grid gap-6 sm:grid-cols-2" aria-label="相邻文章">
+        {previous ? (
+          <Link href={`/posts/${previous.slug}`} className="flex items-start gap-2 text-sm">
+            <ChevronLeftIcon className="mt-0.5 size-4 shrink-0" />
+            <span>
+              <span className="block">上一篇</span>
+              <span className="mt-1 block opacity-85">{previous.title}</span>
+            </span>
           </Link>
-          <span className="px-2">/</span>
-          <span className="font-mono">{padRank(post.rank)}</span>
-        </p>
-        <header className="mt-4 max-w-3xl">
-          <h1 className="font-serif text-3xl leading-tight md:text-5xl">{post.title}</h1>
-          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--ink-dim)]">
-            {post.date ? <time dateTime={post.date}>{formatDate(post.date)}</time> : <span>笔记</span>}
-            <span>约 {post.readingMinutes} 分钟</span>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <Link key={tag} href={tagHref(tag)} className="chip" title={tag}>
-                {tagLabel(tag)}
-              </Link>
-            ))}
-          </div>
-        </header>
-
-        {post.toc.length > 0 ? (
-          <details className="toc-disclosure mt-8 rounded-2xl border border-[var(--line)] bg-[var(--bg-raised)] p-4 lg:hidden">
-            <summary className="cursor-pointer text-sm text-[var(--ink)]">目录 · {post.toc.length}</summary>
-            <div className="mt-3">
-              <TableOfContents toc={post.toc} />
-            </div>
-          </details>
+        ) : (
+          <span className="hidden sm:block" />
+        )}
+        {next ? (
+          <Link
+            href={`/posts/${next.slug}`}
+            className="flex items-start justify-end gap-2 text-right text-sm sm:col-start-2"
+          >
+            <span>
+              <span className="block">下一篇</span>
+              <span className="mt-1 block opacity-85">{next.title}</span>
+            </span>
+            <ChevronRightIcon className="mt-0.5 size-4 shrink-0" />
+          </Link>
         ) : null}
-
-        <div className="mt-10 grid items-start gap-12 lg:grid-cols-[minmax(0,42rem)_220px]">
-          <article id="article" className="min-w-0">
-            <PostBody html={post.html} />
-            <nav className="mt-14 grid gap-3 border-t border-[var(--line)] pt-6 sm:grid-cols-2" aria-label="相邻文章">
-              {previous ? (
-                <Link href={`/posts/${previous.slug}`} className="rounded-2xl border border-[var(--line)] p-4 hover:border-[var(--accent)]">
-                  <span className="text-xs text-[var(--ink-faint)]">上一篇</span>
-                  <span className="mt-1 block text-sm leading-6 text-[var(--ink)]">{previous.title}</span>
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <Link
-                  href={`/posts/${next.slug}`}
-                  className="rounded-2xl border border-[var(--line)] p-4 text-left hover:border-[var(--accent)] sm:text-right"
-                >
-                  <span className="text-xs text-[var(--ink-faint)]">下一篇</span>
-                  <span className="mt-1 block text-sm leading-6 text-[var(--ink)]">{next.title}</span>
-                </Link>
-              ) : null}
-            </nav>
-          </article>
-          {post.toc.length > 0 ? (
-            <aside className="sticky top-24 hidden lg:block">
-              <p id="toc-label" className="mb-3 text-xs tracking-[0.16em] text-[var(--ink-faint)] uppercase">
-                目录
-              </p>
-              <TableOfContents toc={post.toc} labelledBy="toc-label" />
-            </aside>
-          ) : null}
-        </div>
-      </main>
-    </>
-  )
-}
-
-function PostFallback() {
-  return (
-    <main className="mx-auto w-full max-w-3xl px-5 py-16" aria-busy="true">
-      <div className="h-4 w-24 rounded bg-white/10" />
-      <div className="mt-6 h-12 w-4/5 rounded bg-white/10" />
-      <div className="mt-4 h-4 w-2/3 rounded bg-white/5" />
-      <div className="mt-10 space-y-3">
-        <div className="h-4 w-full rounded bg-white/5" />
-        <div className="h-4 w-11/12 rounded bg-white/5" />
-        <div className="h-4 w-4/5 rounded bg-white/5" />
-      </div>
+      </nav>
     </main>
   )
 }

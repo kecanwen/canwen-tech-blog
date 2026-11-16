@@ -1,0 +1,3 @@
+# 旧标签路径，Cloudflare Pages 静态托管
+/posts/tag/:tag /tags/:tag/ 301
+/posts/tag/:tag/ /tags/:tag/ 301
