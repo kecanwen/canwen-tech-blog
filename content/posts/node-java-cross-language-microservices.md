@@ -8,6 +8,7 @@ tags:
   - Java
 rank: 10
 featured: false
+date: "2025-01-16"
 ---
 
 # 深入浅出：跨语言微服务互调的底层机制与工程实践（Node.js $\leftrightarrow$ Java）

@@ -8,6 +8,7 @@ tags:
   - Frontend
 rank: 9
 featured: false
+date: "2025-03-27"
 ---
 
 选择 Monorepo 还是 Polyrepo（多仓库），本质上是一个**工程权衡（Trade-off）问题**：

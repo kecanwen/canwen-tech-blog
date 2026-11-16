@@ -8,6 +8,7 @@ tags:
   - Schema-Driven
 rank: 5
 featured: false
+date: "2026-01-22"
 ---
 
 ## 一句话定调
