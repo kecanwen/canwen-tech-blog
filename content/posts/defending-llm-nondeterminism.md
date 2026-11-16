@@ -8,6 +8,7 @@ tags:
   - Architecture
 rank: 6
 featured: false
+date: "2025-12-11"
 ---
 
 # 防御大模型输出非确定性的架构设计

@@ -1,65 +1,63 @@
-import type { Metadata } from "next"
-import localFont from "next/font/local"
-import { Suspense } from "react"
+import type { Metadata, Viewport } from "next"
+import { IBM_Plex_Mono } from "next/font/google"
+import Script from "next/script"
 
 import { SiteFooter } from "@/components/site-footer"
-import { SiteHeader, SiteHeaderFallback } from "@/components/site-header"
+import { SiteHeader } from "@/components/site-header"
 import { site } from "@/lib/site"
+import { themeInitScript } from "@/lib/theme"
 
 import "./globals.css"
 
-const sans = localFont({
-  src: [
-    { path: "../fonts/noto-sans-sc-400.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/noto-sans-sc-700.woff2", weight: "700", style: "normal" },
-  ],
-  variable: "--font-sans-loaded",
+const plex = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
-})
-
-const serif = localFont({
-  src: [{ path: "../fonts/noto-serif-sc-600.woff2", weight: "600", style: "normal" }],
-  variable: "--font-serif-loaded",
-  display: "swap",
-})
-
-const mono = localFont({
-  src: [
-    { path: "../fonts/jetbrains-mono-400.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/jetbrains-mono-500.woff2", weight: "500", style: "normal" },
-  ],
-  variable: "--font-mono-loaded",
-  display: "swap",
-  preload: false,
+  variable: "--font-plex",
 })
 
 export const metadata: Metadata = {
-  metadataBase: site.url ? new URL(site.url) : undefined,
+  metadataBase: new URL(site.url),
   title: {
     default: site.title,
     template: `%s · ${site.name}`,
   },
   description: site.description,
-  authors: [{ name: `${site.nameZh}（${site.name}）` }],
+  applicationName: site.title,
+  authors: [{ name: `${site.nameZh}（${site.name}）`, url: site.url }],
+  alternates: {
+    types: {
+      "application/rss+xml": "/rss.xml",
+    },
+  },
   openGraph: {
     title: site.title,
     description: site.description,
     locale: "zh_CN",
     type: "website",
+    siteName: site.title,
+    url: site.url,
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FBFEFB" },
+    { media: "(prefers-color-scheme: dark)", color: "#212737" },
+  ],
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="zh-CN" className={`${sans.variable} ${serif.variable} ${mono.variable} h-full`}>
-      <body className="flex min-h-full flex-col antialiased">
+    <html lang="zh-CN" className={`${plex.variable} h-full`} suppressHydrationWarning>
+      <body className="flex min-h-svh flex-col antialiased">
+        <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <a className="skip-link" href="#content">
           跳到正文
         </a>
-        <Suspense fallback={<SiteHeaderFallback />}>
-          <SiteHeader />
-        </Suspense>
-        <div id="content" className="flex flex-1 flex-col">
+        <SiteHeader />
+        <div id="content" className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 pb-12">
           {children}
         </div>
         <SiteFooter />

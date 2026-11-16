@@ -28,14 +28,11 @@ const focuses = [
 
 export default function AboutPage() {
   return (
-    <main className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8 md:py-20">
-      <p className="text-xs tracking-[0.2em] text-[var(--ink-faint)] uppercase">关于</p>
-      <h1 className="mt-4 font-serif text-4xl leading-tight md:text-6xl">
-        {site.nameZh}
-        <span className="mt-2 block text-2xl text-[var(--ink-dim)] md:text-3xl">{site.name}</span>
-      </h1>
-      <p className="mt-6 text-lg text-[var(--ink)]">{site.role}</p>
-      <div className="mt-8 max-w-2xl space-y-5 text-[16px] leading-8 text-[var(--ink-dim)]">
+    <main className="pt-8">
+      <h1 className="page-title">{site.nameZh}</h1>
+      <p className="mt-2 opacity-70">{site.name}</p>
+      <p className="mt-6">{site.role}</p>
+      <div className="mt-6 space-y-5">
         <p>
           关心的问题比较具体：模型生成是概率性的，合进主干的变更却必须可预测。所以这里的笔记大多在写约束，而不是模型又多会写了多少行。
         </p>
@@ -44,19 +41,16 @@ export default function AboutPage() {
         </p>
         <p>一篇文章如果不能被工具复现，就还停在愿望清单上。</p>
       </div>
-      <div className="draw-line mt-10 h-px w-24 bg-[var(--accent)]" />
-      <div className="mt-10 grid gap-4 md:grid-cols-3">
+      <ul className="mt-10 space-y-6">
         {focuses.map((item) => (
-          <Link
-            key={item.title}
-            href={item.href}
-            className="rounded-2xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 transition-colors hover:border-[var(--accent)]"
-          >
-            <h2 className="font-serif text-xl">{item.title}</h2>
-            <p className="mt-3 text-sm leading-7 text-[var(--ink-dim)]">{item.body}</p>
-          </Link>
+          <li key={item.title}>
+            <Link href={item.href} className="font-medium underline decoration-dashed underline-offset-4">
+              {item.title}
+            </Link>
+            <p className="mt-1">{item.body}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </main>
   )
 }

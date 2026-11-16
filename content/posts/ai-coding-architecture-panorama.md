@@ -8,6 +8,7 @@ tags:
   - Agent
 rank: 1
 featured: true
+date: "2026-08-18"
 ---
 
 # AI Coding 体系架构图：从基础设施到治理体系的全景分析

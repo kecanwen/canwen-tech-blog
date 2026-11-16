@@ -32,5 +32,5 @@ export function tagLabel(tag: string) {
 }
 
 export function tagHref(tag: string) {
-  return `/posts/tag/${encodeURIComponent(tag)}`
+  return `/tags/${encodeURIComponent(tag)}`
 }

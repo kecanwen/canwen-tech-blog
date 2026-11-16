@@ -1,6 +1,8 @@
 # canwen · 柯灿文
 
-个人技术博客。中文界面，十篇工程笔记，主题是 AI 全栈和资深前端架构里的取舍：门禁、契约、指标、可观测性，以及跨语言边界。
+个人技术博客。中文界面，三十篇工程笔记，主题是 AI 全栈和资深前端架构里的取舍：门禁、契约、指标、可观测性，以及跨语言边界。
+
+首页是窄栏排版：头像、外链、一句角色和简介，下面按发布日期从新到旧排标题和日期。文章仍在 `/posts/<slug>/`。标签在 `/tags/`，搜索在 `/search/`，订阅在 `/rss.xml`。
 
 ## 本地运行
 
@@ -26,7 +28,7 @@ npm start
 
 ## 内容如何对应文章
 
-正文在 `content/posts/*.md`。文件名就是路由 slug。每篇 frontmatter 包含 `title`、`slug`、`description`、`tags`、`rank`、`featured`，有原始日期的才写 `date`。
+正文在 `content/posts/*.md`。文件名就是路由 slug。每篇 frontmatter 包含 `title`、`slug`、`description`、`tags`、`rank`、`featured`、`date`。首页、标签和搜索都按 `date` 从新到旧排列。
 
 | 顺序 | slug | 文章 |
 | --- | --- | --- |
@@ -41,11 +43,13 @@ npm start
 | 09 | `monorepo-vs-polyrepo-tradeoffs` | 选择 Monorepo 还是 Polyrepo：工程权衡（Trade-off） |
 | 10 | `node-java-cross-language-microservices` | 深入浅出：跨语言微服务互调的底层机制与工程实践（Node.js ↔ Java） |
 
+同目录还有 20 篇，发布日期从 2022-03-18 到 2026-10-08。首页不按上表顺序，而按 `date` 从新到旧。
+
 渲染在 `lib/markdown.ts`：gray-matter 读 frontmatter，remark / rehype 转 HTML。代码块用 Shiki（`rehype-pretty-code`），公式用 KaTeX。Obsidian 的 `> [!IMPORTANT]` / `> [!tip]` 会变成带样式的引用；`[[已知文章标题]]` 会链到站内文章，其余双向链接只保留文字。文首一级标题由页面标题接管，不会在正文里再出现一次。
 
-新增一篇：把 markdown 放进 `content/posts/`，slug 与文件名一致，然后重新构建。主题页路由是 `/posts/tag/<标签>`。
+新增一篇：把 markdown 放进 `content/posts/`，slug 与文件名一致，然后重新构建。标签页路由是 `/tags/<标签>`。
 
-`fonts/` 里是按当前正文裁过的 Noto Sans SC、Noto Serif SC 和 JetBrains Mono。新文章如果用到子集以外的字，缺的字形会退回系统字体。
+界面字体是 IBM Plex Mono，构建时由 `next/font` 下载并自托管。中文使用系统黑体回退。主题存在浏览器的 `localStorage`，第一次访问跟随系统浅色或深色。
 
 ## 脱敏
 

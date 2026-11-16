@@ -8,6 +8,7 @@ tags:
   - Retrieval
 rank: 7
 featured: false
+date: "2025-09-24"
 ---
 
 # RAG 系统性失败场景与工程补救方案

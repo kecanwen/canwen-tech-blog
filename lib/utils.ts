@@ -12,5 +12,5 @@ export function padRank(rank: number) {
 export function formatDate(iso: string) {
   const [year, month, day] = iso.slice(0, 10).split("-")
   if (!year || !month || !day) return iso
-  return `${year}.${month}.${day}`
+  return `${year}-${month}-${day}`
 }

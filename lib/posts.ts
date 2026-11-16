@@ -65,7 +65,12 @@ export async function getPostIndex(): Promise<PostMeta[]> {
     }
     return meta
   })
-  posts.sort((a, b) => a.rank - b.rank)
+  posts.sort((a, b) => {
+    const ad = a.date ?? ""
+    const bd = b.date ?? ""
+    if (ad !== bd) return bd.localeCompare(ad)
+    return a.rank - b.rank
+  })
   return posts
 }
 
